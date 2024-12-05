@@ -1,36 +1,27 @@
+import re
 import pyotp
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import time
 from SecretKey import secret
 
-# Create the TOTP object
+
 totp = pyotp.TOTP(secret)
 
-# E-posta gönderme fonksiyonu
-def send_email(recipient_email, otp_code):
-    sender_email = "oguzhanfatihk@gmail.com"
-    sender_password = "uxgdqgepqmxabihb"
 
-    subject = "Your TOTP Code"
-    body = f"Your One-Time Password (TOTP) code is: {otp_code}"
-
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = recipient_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
+def send_email(recipient, otp):
+    # E-posta adresi formatını kontrol et
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", recipient):
+        raise ValueError(f"Invalid email address: {recipient}")
 
     try:
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
-            server.login(sender_email, sender_password)
-            text = msg.as_string()
-            server.sendmail(sender_email, recipient_email, text)
-            print(f"OTP code sent to {recipient_email}")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
+            server.login("oguzhanfatihk@gmail.com", "uxgdqgepqmxabihb")
+            message = f"Subject: Your OTP\n\nYour OTP is: {otp}"
+            server.sendmail("oguzhanfatihk@gmail.com", recipient, message)
+    except smtplib.SMTPAuthenticationError as e:
+        print(f"Authentication failed: {e}")
+        raise
 
 # Ana kod bloğu
 if __name__ == "__main__":
