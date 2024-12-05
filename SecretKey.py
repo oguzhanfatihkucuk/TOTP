@@ -1,2 +1,2 @@
 # Global secret key
-secret = "JBSWY3DPEHPK3PXP"  # Örnek bir secret key, bunu rasgele de üretebilirsiniz.
+secret = "JBSWY3DPEHPK3PXP"  #An exapmle of random secret key,you can produce a new one by yourself.
